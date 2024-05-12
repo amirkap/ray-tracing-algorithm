@@ -25,11 +25,11 @@ class DirectionalLight(LightSource):
 
     def __init__(self, intensity, direction):
         super().__init__(intensity)
-        self.direction = np.array(direction)
+        self.direction = normalize(direction)
 
     # This function returns the ray that goes from a point to the light source
     def get_light_ray(self,intersection_point):
-        return Ray(intersection_point, normalize(-1 * self.direction))
+        return Ray(intersection_point, -1 * self.direction)
 
     # This function returns the distance from a point to the light source
     def get_distance_from_light(self, intersection):
@@ -65,7 +65,7 @@ class PointLight(LightSource):
 class SpotLight(LightSource):
     def __init__(self, intensity, position, direction, kc, kl, kq):
         super().__init__(intensity)
-        self.direction = np.array(direction)
+        self.direction = normalize(direction)
         self.position = np.array(position)
         self.kc = kc
         self.kl = kl
@@ -73,14 +73,14 @@ class SpotLight(LightSource):
         
     # This function returns the ray that goes from a point to the light source
     def get_light_ray(self, intersection):
-        return Ray(intersection, normalize(self.position - intersection))
+        return Ray(intersection, self.position - intersection)
 
     def get_distance_from_light(self, intersection):
         return np.linalg.norm(intersection - self.position)
 
     def get_intensity(self, intersection):
         distance = self.get_distance_from_light(intersection)
-        nominator = self.intensity + np.dot(normalize(self.position - intersection), normalize(self.direction))
+        nominator = self.intensity + np.dot(normalize(intersection - self.position), normalize(self.direction))
         denominator = self.kc + self.kl * distance + self.kq * (distance ** 2)
         intensity = nominator / denominator
         
@@ -89,7 +89,7 @@ class SpotLight(LightSource):
 class Ray:
     def __init__(self, origin, direction):
         self.origin = origin
-        self.direction = direction
+        self.direction = normalize(direction)
 
     # The function is getting the collection of objects in the scene and looks for the one with minimum distance.
     # The function should return the nearest object and its distance (in two different arguments)
@@ -100,11 +100,12 @@ class Ray:
             intersection = obj.intersect(self)
             if intersection is not None:
                 t, _ = intersection
-                if t < min_t:
+                if t < min_t and t > 0:
                     min_t = t
                     nearest_object = obj
-                    
-        return nearest_object, np.linalg.norm(self.origin + min_t * self.direction)
+        distance_vector = (self.origin + min_t * self.direction) - self.origin
+                 
+        return nearest_object, np.linalg.norm(distance_vector)
 
 
 class Object3D:
@@ -163,20 +164,22 @@ class Triangle(Object3D):
         else:
             return None
         
-    def is_inside_triangle(self, point):
+    def is_inside_triangle(self, point, epsilon=1e-6):
         # We use baricentric coordinates to check if the point is inside the triangle.
         ab = self.b - self.a
         ac = self.c - self.a
-        pa = self.a - point
-        pb = self.b - point
-        pc = self.c - point
+        pa = point - self.a
+        pb = point - self.b
+        pc = point - self.c
         area_abc = np.linalg.norm(np.cross(ab, ac))
         
         alpha = np.linalg.norm(np.cross(pb, pc)) / area_abc
         beta = np.linalg.norm(np.cross(pc, pa)) / area_abc
-        gamma = 1 - alpha - beta
+        gamma = np.linalg.norm(np.cross(pa, pb)) / area_abc
         
-        return (0 <= alpha <= 1 and 0 <= beta <= 1 and 0 <= gamma <= 1)
+        is_triangle = (0 <= alpha <= 1) and (0 <= beta <= 1) and (0 <= gamma <= 1) and (np.abs(alpha + beta + gamma - 1) < epsilon)
+        
+        return is_triangle
    
 
 class Pyramid(Object3D):
@@ -237,7 +240,8 @@ A /&&&&&&&&&&&&&&&&&&&&\ B &&&/ C
                 t, obj = res
                 if t < min_t and t > 0:
                     min_t = t
-                    min_obj = obj 
+                    min_obj = obj
+                    self.normal = obj.normal 
                     
         return min_t, min_obj if min_obj is not None else None
     
@@ -263,12 +267,19 @@ class Sphere(Object3D):
         t2 = (-b - np.sqrt(discriminant)) / (2*a)
         
         if t1 > 0 and t2 > 0:
-            return min(t1, t2), self
+            mint_t = min(t1, t2)
         elif t1 > 0:
-            return t1, self
+            mint_t = t1
         elif t2 > 0:
-            return t2, self
+            mint_t = t2
         else:
             return None
-    
+        
+        intersection_point = (o + mint_t * d)  
+        self.set_normal(intersection_point)
+        
+        return mint_t, self
+        
+    def set_normal(self, point):
+        self.normal = normalize(point - self.center)
 
