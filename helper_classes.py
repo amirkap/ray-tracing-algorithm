@@ -80,7 +80,7 @@ class SpotLight(LightSource):
 
     def get_intensity(self, intersection):
         distance = self.get_distance_from_light(intersection)
-        nominator = self.intensity + np.dot(normalize(intersection - self.position), normalize(self.direction))
+        nominator = self.intensity * np.dot(normalize(intersection - self.position), normalize(self.direction))
         denominator = self.kc + self.kl * distance + self.kq * (distance ** 2)
         intensity = nominator / denominator
         
