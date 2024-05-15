@@ -20,8 +20,8 @@ def render_scene(camera, ambient, lights, objects, screen_size, max_depth):
             if intersection is not None:
                 hit_point, hit_object = intersection    
                 color = get_color(hit_point, hit_object, ray, ambient, lights, objects, 0, max_depth)
-
-            
+            else:
+                color = np.zeros(3)    
             # We clip the values between 0 and 1 so all pixel values will make sense.
             image[i, j] = np.clip(color,0,1)
 
@@ -96,10 +96,59 @@ def calc_reflection(hit, object : Object3D, ray, depth, max_depth):
 def get_normal(hit, object):
     pass
         
-# Write your own objects and lights
-# TODO
+# # Write your own objects and lights
+# # TODO
+# def your_own_scene():
+#     camera = np.array([0,0,1])
+#     lights = []
+#     objects = []
+#     return camera, lights, objects
+
 def your_own_scene():
-    camera = np.array([0,0,1])
-    lights = []
-    objects = []
+    # Define the camera
+    camera = np.array([0, 0, 1])
+    
+    # Define light sources
+    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([2, 2, 2]), kc=0.1, kl=0.1, kq=0.1)
+    spot_light = SpotLight(intensity=np.array([1, 1, 1]), position=np.array([-2, 3, 1]), 
+                           direction=np.array([2, -3, -1]), kc=0.1, kl=0.1, kq=0.1)
+    
+    # Define the pyramid with vertices
+    pyramid_vertices = np.array([
+        [-1, -1, -3],  # Base vertex A
+        [1, -1, -3],   # Base vertex B
+        [1, 1, -3],    # Base vertex C
+        [-1, 1, -3],   # Base vertex D
+        [0, 0, -2]     # Top vertex E (apex)
+    ])
+    pyramid = Pyramid(v_list=pyramid_vertices)
+    pyramid.set_material(ambient=np.array([0.2, 0.8, 0.2]), diffuse=np.array([0.2, 1, 0.2]), 
+                         specular=np.array([1, 1, 1]), shininess=10, reflection=0.7)
+    
+    # Define balls
+    sphere1 = Sphere(center=np.array([2, 0, -4]), radius=0.5)
+    sphere1.set_material(ambient=np.array([1, 0, 0]), diffuse=np.array([1, 0.4, 0.4]), 
+                         specular=np.array([1, 1, 1]), shininess=50, reflection=0.65)
+    
+    sphere2 = Sphere(center=np.array([3, 0, -5]), radius=0.5)
+    sphere2.set_material(ambient=np.array([0, 0, 1]), diffuse=np.array([0.4, 0.4, 1]), 
+                         specular=np.array([1, 1, 1]), shininess=50, reflection=0.65)
+    
+    sphere3 = Sphere(center=np.array([2, 1, -4]), radius=0.5)
+    sphere3.set_material(ambient=np.array([1, 1, 0]), diffuse=np.array([1, 1, 0.4]), 
+                         specular=np.array([1, 1, 1]), shininess=50, reflection=0.65)
+    
+    # Define planes
+    floor_plane = Plane(point=np.array([0, -1, 0]), normal=np.array([0, 1, 0]))
+    floor_plane.set_material(ambient=np.array([0.1, 0.1, 0.1]), diffuse=np.array([0.6, 0.6, 0.6]), 
+                             specular=np.array([1, 1, 1]), shininess=1000, reflection=0.5)
+    
+    background_plane = Plane(point=np.array([0, 0, -5]), normal=np.array([0, 0, 1]))
+    background_plane.set_material(ambient=np.array([0.1, 0.1, 0.1]), diffuse=np.array([0.5, 0.5, 0.5]), 
+                                  specular=np.array([1, 1, 1]), shininess=100, reflection=0.2)
+    
+    # List of objects and lights
+    objects = [pyramid, sphere1, sphere2, sphere3, floor_plane, background_plane]
+    lights = [point_light, spot_light]
+    
     return camera, lights, objects
