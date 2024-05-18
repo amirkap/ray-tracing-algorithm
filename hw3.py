@@ -105,50 +105,53 @@ def get_normal(hit, object):
 #     return camera, lights, objects
 
 def your_own_scene():
-    # Define the camera
-    camera = np.array([0, 0, 1])
-    
-    # Define light sources
-    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([2, 2, 2]), kc=0.1, kl=0.1, kq=0.1)
-    spot_light = SpotLight(intensity=np.array([1, 1, 1]), position=np.array([-2, 3, 1]), 
-                           direction=np.array([2, -3, -1]), kc=0.1, kl=0.1, kq=0.1)
-    
-    # Define the pyramid with vertices
-    pyramid_vertices = np.array([
-        [-1, -1, -3],  # Base vertex A
-        [1, -1, -3],   # Base vertex B
-        [1, 1, -3],    # Base vertex C
-        [-1, 1, -3],   # Base vertex D
-        [0, 0, -2]     # Top vertex E (apex)
+    """
+    This function defines a scene with a sims character like object and sets the lights and camera.
+
+    Returns:
+        camera: The position of the camera.
+        lights: A list of lights in the scene.
+        objects: A list of objects in the scene.
+    """
+    # define objects
+    v_list = np.array([
+        [-0.0835, 0.626165, -0.266335],  # point 1
+        [-0.005665, 0.661335, -0.124165],  # point 2
+        [0.080665, 0.655165, -0.266335],  # point 3
+        [-0.017335, 0.792165, -0.238],  # point 4
+        [0.038335, 0.3615, -0.1985]   # point 5
     ])
-    pyramid = Pyramid(v_list=pyramid_vertices)
-    pyramid.set_material(ambient=np.array([0.2, 0.8, 0.2]), diffuse=np.array([0.2, 1, 0.2]), 
-                         specular=np.array([1, 1, 1]), shininess=10, reflection=0.7)
-    
-    # Define balls
-    sphere1 = Sphere(center=np.array([2, 0, -4]), radius=0.5)
-    sphere1.set_material(ambient=np.array([1, 0, 0]), diffuse=np.array([1, 0.4, 0.4]), 
-                         specular=np.array([1, 1, 1]), shininess=50, reflection=0.65)
-    
-    sphere2 = Sphere(center=np.array([3, 0, -5]), radius=0.5)
-    sphere2.set_material(ambient=np.array([0, 0, 1]), diffuse=np.array([0.4, 0.4, 1]), 
-                         specular=np.array([1, 1, 1]), shininess=50, reflection=0.65)
-    
-    sphere3 = Sphere(center=np.array([2, 1, -4]), radius=0.5)
-    sphere3.set_material(ambient=np.array([1, 1, 0]), diffuse=np.array([1, 1, 0.4]), 
-                         specular=np.array([1, 1, 1]), shininess=50, reflection=0.65)
-    
-    # Define planes
-    floor_plane = Plane(point=np.array([0, -1, 0]), normal=np.array([0, 1, 0]))
-    floor_plane.set_material(ambient=np.array([0.1, 0.1, 0.1]), diffuse=np.array([0.6, 0.6, 0.6]), 
-                             specular=np.array([1, 1, 1]), shininess=1000, reflection=0.5)
-    
-    background_plane = Plane(point=np.array([0, 0, -5]), normal=np.array([0, 0, 1]))
-    background_plane.set_material(ambient=np.array([0.1, 0.1, 0.1]), diffuse=np.array([0.5, 0.5, 0.5]), 
-                                  specular=np.array([1, 1, 1]), shininess=100, reflection=0.2)
-    
-    # List of objects and lights
-    objects = [pyramid, sphere1, sphere2, sphere3, floor_plane, background_plane]
-    lights = [point_light, spot_light]
-    
+
+    # Create a diamond as the sims hat
+    diamond = Pyramid(v_list)
+    diamond.set_material([0.1, 0.7, 0.1], [0.1, 0.7, 0.1], [0.3, 0.3, 0.3], 10, 0.9)  # Green, transparent diamond
+
+    # Create a sphere for the sims face 
+    sphere = Sphere(center=[0, 0, 0], radius=0.25)
+    sphere.set_material([0.8, 0.7, 0.5], [0.8, 0.7, 0.5], [0.3, 0.3, 0.3], 10, 0.3)  # Beige colored sphere
+
+    #eye
+    left_eye = Sphere(center=[-0.1, 0.08, 0.2], radius=0.03)
+    left_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  # Black, opaque eyes
+
+    right_eye = Sphere(center=[0.1, 0.08, 0.2], radius=0.03)
+    right_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  # Black, opaque eyes
+
+    plane = Plane([0, 1, 0], [0, -0.3, 0])
+    plane.set_material([1, 1, 0], [1, 1, 0], [1, 1, 1], 1000, 0.8)  # Yellow and reflective
+
+    background = Plane([0, 0, 1], [0, 0, -3])
+    background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 1000, 0)  # Light blue
+
+    # define lights
+    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([2, 2, 2]), kc=0.1, kl=0.1, kq=0.1)
+    directional_light = DirectionalLight(intensity=np.array([0.5, 0.5, 0.5]), direction=np.array([-1, -1, -1]))
+
+    # set camera position
+    camera = np.array([0, 0, 1])  # Camera is positioned in front of the sims object, slightly above
+
+    # set scene objects and lights
+    objects = [diamond, sphere, plane, background, left_eye, right_eye]
+    lights = [point_light, directional_light]
+
     return camera, lights, objects
