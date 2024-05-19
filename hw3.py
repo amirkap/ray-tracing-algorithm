@@ -90,12 +90,6 @@ def calc_specular(light, hit, object : Object3D, view_ray : Ray):
     
     return specular_intensity
 
-def calc_reflection(hit, object : Object3D, ray, depth, max_depth):
-    pass
-
-def get_normal(hit, object):
-    pass
-        
 # # Write your own objects and lights
 # # TODO
 # def your_own_scene():
@@ -128,10 +122,10 @@ def your_own_scene():
     sphere.set_material([0.8, 0.7, 0.5], [0.8, 0.7, 0.5], [0.3, 0.3, 0.3], 10, 0.3)  
 
     left_eye = Sphere(center=[-0.1, 0.08, 0.2], radius=0.03)
-    left_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  
+    left_eye.set_material([0, 0, 0], [0, 0, 0], [1, 1, 1], 10, 0.3)  
 
     right_eye = Sphere(center=[0.1, 0.08, 0.2], radius=0.03)
-    right_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  
+    right_eye.set_material([0, 0, 0], [0, 0, 0], [1, 1, 1], 10, 0.3)  
 
     plane = Plane([0, 1, 0], [0, -0.3, 0])
     plane.set_material([1, 1, 0], [1, 1, 0], [1, 1, 1], 1000, 0.8) 
@@ -139,31 +133,68 @@ def your_own_scene():
     background = Plane([0, 0, 1], [0, 0, -3])
     background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 1000, 0) 
 
-    house_lower_tri_list = np.array([[-1.7,-0.3,-1],
-                   [-0.7,-0.3,-1],
-                   [-1.7,0.9,-1]])
+    house_list = np.array([[-1.7, -0.3, -1],
+                           [-0.7, -0.3, -1],
+                           [-1.7, 0.9, -1],
+                           [-0.7, 0.9, -1]])
 
-    house_lower_tri = Triangle(*house_lower_tri_list)
-    house_lower_tri.set_material([1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [0.1, 0.1, 0.1], 100, 0.5)
+    house_lower_tri = Triangle(house_list[0], house_list[1], house_list[2])
+    house_upper_tri = Triangle(house_list[1], house_list[3], house_list[2])
 
-    house_upper_tri_list = np.array([[-0.7,0.9,-1],
-                   [-0.7,-0.3,-1],
-                   [-1.7,0.9,-1]])
-    house_upper_tri = Triangle(*house_upper_tri_list[::-1])
-    house_upper_tri.set_material([1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [0.1, 0.1, 0.1], 100, 0.5)
+    house_lower_tri.set_material([1, 1, 1], [1, 1, 1], [0.1, 0.1, 0.1], 100, 0.5)
+    house_upper_tri.set_material([1, 1, 1], [1, 1, 1], [0.1, 0.1, 0.1], 100, 0.5)
 
     roof_list = np.array([[-0.7,0.9,-1],
                    [-1.2,1.5,-1],
                    [-1.7,0.9,-1]])
     roof = Triangle(*roof_list)
-    roof.set_material([1, 0, 0], [1, 0, 0], [.1, .1, .1], 100, 0.5)
+    roof.set_material([1, 0, 0], [1, 0, 0], [0.1, 0.1, 0.1], 100, 0.5)
+
+    # left window
+    window1_list = np.array([[-1.6,0.4,-0.999],
+                             [-1.4,0.4,-0.999],
+                             [-1.6,0.6,-0.999],
+                             [-1.4,0.6,-0.999]])
+
+    window1_upper_tri = Triangle(window1_list[0], window1_list[1], window1_list[2])
+    window1_lower_tri = Triangle(window1_list[1], window1_list[3], window1_list[2])
+
+    window1_lower_tri.set_material([0, 0, 0], [0, 0, 0], [0.1, 0.1, 0.1], 100, 0.5)
+    window1_upper_tri.set_material([0, 0, 0], [0, 0, 0], [0.1, 0.1, 0.1], 100, 0.5)
+
+    # right window
+    window2_list = np.array([[-1.0,0.4,-0.999],
+                             [-0.8,0.4,-0.999],
+                             [-1.0,0.6,-0.999],
+                             [-0.8,0.6,-0.999]])
+
+    window2_upper_tri = Triangle(window2_list[0], window2_list[1], window2_list[2])
+    window2_lower_tri = Triangle(window2_list[1], window2_list[3], window2_list[2])
+
+    window2_lower_tri.set_material([0, 0, 0], [0, 0, 0], [0.1, 0.1, 0.1], 100, 0.5)
+    window2_upper_tri.set_material([0, 0, 0], [0, 0, 0], [0.1, 0.1, 0.1], 100, 0.5)
+
+    door_list = np.array([[-1.35,-0.3,-0.999],
+                        [-1.05,-0.3,-0.999],
+                        [-1.35,0.2,-0.999],
+                        [-1.05,0.2,-0.999]])
+
+    door_upper_tri = Triangle(door_list[0], door_list[1], door_list[2])
+    door_lower_tri = Triangle(door_list[1], door_list[3], door_list[2])
+
+    door_lower_tri.set_material([0.5, 0.25, 0], [0.5, 0.25, 0], [0.1, 0.1, 0.1], 100, 0.5)
+    door_upper_tri.set_material([0.5, 0.25, 0], [0.5, 0.25, 0], [0.1, 0.1, 0.1], 100, 0.5)
+
+    door_knob = Sphere(center=[-1.27, -0.1, -0.998], radius=0.04)
+    door_knob.set_material([0.8, 0.8, 0], [0.8, 0.8, 0], [0.3, 0.3, 0.3], 50, 0.4)
 
     point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([2, 2, 2]), kc=0.1, kl=0.1, kq=0.1)
     directional_light = DirectionalLight(intensity=np.array([0.5, 0.5, 0.5]), direction=np.array([-1, -1, -1]))
 
     camera = np.array([0, 0, 1])  
 
-    objects = [diamond, sphere, plane, background, left_eye, right_eye, house_lower_tri, house_upper_tri, roof]
+    objects = [diamond, sphere, plane, background, left_eye, right_eye, house_lower_tri, house_upper_tri, roof,
+               window1_upper_tri, window1_lower_tri, window2_upper_tri, window2_lower_tri, door_upper_tri, door_lower_tri, door_knob]
     lights = [point_light, directional_light]
 
     return camera, lights, objects
