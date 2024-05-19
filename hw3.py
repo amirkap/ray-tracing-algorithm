@@ -143,15 +143,34 @@ def your_own_scene():
     background = Plane([0, 0, 1], [0, 0, -3])
     background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 1000, 0)  # Light blue
 
+    house_lower_tri_list = np.array([[-1.7,-0.3,-1],
+                   [-0.7,-0.3,-1],
+                   [-1.7,0.9,-1]])
+
+    house_lower_tri = Triangle(*house_lower_tri_list)
+    house_lower_tri.set_material([0.8, 0.8, 0.8], [0.8, 0.8, 0.8], [0, 0, 0], 100, 0.5)
+
+    house_upper_tri_list = np.array([[-0.7,0.9,-1],
+                   [-0.7,-0.3,-1],
+                   [-1.7,0.9,-1]])
+    house_upper_tri = Triangle(*house_upper_tri_list)
+    house_upper_tri.set_material([0.8, 0.8, 0.8], [0.8, 0.8, 0.8], [0, 0, 0], 100, 0.5)
+
+    roof_list = np.array([[-0.7,0.9,-1],
+                   [-1.2,1.5,-1],
+                   [-1.7,0.9,-1]])
+    roof = Triangle(*roof_list)
+    roof.set_material([1, 0, 0], [1, 0, 0], [.1, .1, .1], 100, 0.5)
+
     # define lights
-    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([2, 2, 2]), kc=0.1, kl=0.1, kq=0.1)
+    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([0, 0, 1]), kc=0.1, kl=0.1, kq=0.1)
     directional_light = DirectionalLight(intensity=np.array([0.5, 0.5, 0.5]), direction=np.array([-1, -1, -1]))
 
     # set camera position
-    camera = np.array([0, 0, 1])  # Camera is positioned in front of the sims object, slightly above
+    camera = np.array([0, 0, 1])  
 
     # set scene objects and lights
-    objects = [diamond, sphere, plane, background, left_eye, right_eye]
+    objects = [diamond, sphere, plane, background, left_eye, right_eye, house_lower_tri, house_upper_tri, roof]
     lights = [point_light, directional_light]
 
     return camera, lights, objects
