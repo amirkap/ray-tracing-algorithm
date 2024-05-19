@@ -119,7 +119,7 @@ def your_own_scene():
     diamond.set_material([0.1, 0.7, 0.1], [0.1, 0.7, 0.1], [0.3, 0.3, 0.3], 10, 0.9)  
 
     sphere = Sphere(center=[0, 0, 0], radius=0.25)
-    sphere.set_material([0.8, 0.7, 0.5], [0.8, 0.7, 0.5], [0.3, 0.3, 0.3], 10, 0.3)  
+    sphere.set_material([0.8, 0.7, 0.5], [0.8, 0.7, 0.5], [0.8, 0.7, 0.5], 10, 0)  
 
     left_eye = Sphere(center=[-0.1, 0.08, 0.2], radius=0.03)
     left_eye.set_material([0, 0, 0], [0, 0, 0], [1, 1, 1], 10, 0.3)  
@@ -128,10 +128,10 @@ def your_own_scene():
     right_eye.set_material([0, 0, 0], [0, 0, 0], [1, 1, 1], 10, 0.3)  
 
     plane = Plane([0, 1, 0], [0, -0.3, 0])
-    plane.set_material([1, 1, 0], [1, 1, 0], [1, 1, 1], 1000, 0.8) 
+    plane.set_material([1, 1, 0], [1, 1, 0], [1, 1, 0], 50, 0.2) 
 
     background = Plane([0, 0, 1], [0, 0, -3])
-    background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 1000, 0) 
+    background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 50, 0) 
 
     house_list = np.array([[-1.7, -0.3, -1],
                            [-0.7, -0.3, -1],
@@ -141,8 +141,8 @@ def your_own_scene():
     house_lower_tri = Triangle(house_list[0], house_list[1], house_list[2])
     house_upper_tri = Triangle(house_list[1], house_list[3], house_list[2])
 
-    house_lower_tri.set_material([1, 1, 1], [1, 1, 1], [0.1, 0.1, 0.1], 100, 0.5)
-    house_upper_tri.set_material([1, 1, 1], [1, 1, 1], [0.1, 0.1, 0.1], 100, 0.5)
+    house_lower_tri.set_material([1, 1, 1], [1, 1, 1], [1, 1, 1], 10, 0)
+    house_upper_tri.set_material([1, 1, 1], [1, 1, 1], [1, 1, 1], 10, 0)
 
     roof_list = np.array([[-0.7,0.9,-1],
                    [-1.2,1.5,-1],
@@ -182,8 +182,8 @@ def your_own_scene():
     door_upper_tri = Triangle(door_list[0], door_list[1], door_list[2])
     door_lower_tri = Triangle(door_list[1], door_list[3], door_list[2])
 
-    door_lower_tri.set_material([0.5, 0.25, 0], [0.5, 0.25, 0], [0.1, 0.1, 0.1], 100, 0.5)
-    door_upper_tri.set_material([0.5, 0.25, 0], [0.5, 0.25, 0], [0.1, 0.1, 0.1], 100, 0.5)
+    door_lower_tri.set_material([0.5, 0.25, 0], [0.5, 0.25, 0], [0.5, 0.25, 0], 10, 0)
+    door_upper_tri.set_material([0.5, 0.25, 0], [0.5, 0.25, 0], [0.5, 0.25, 0], 10, 0)
 
     door_knob = Sphere(center=[-1.27, -0.1, -0.998], radius=0.04)
     door_knob.set_material([0.8, 0.8, 0], [0.8, 0.8, 0], [0.3, 0.3, 0.3], 50, 0.4)
