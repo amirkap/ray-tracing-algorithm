@@ -113,48 +113,44 @@ def your_own_scene():
         lights: A list of lights in the scene.
         objects: A list of objects in the scene.
     """
-    # define objects
     v_list = np.array([
-        [-0.0835, 0.626165, -0.266335],  # point 1
-        [-0.005665, 0.661335, -0.124165],  # point 2
-        [0.080665, 0.655165, -0.266335],  # point 3
-        [-0.017335, 0.792165, -0.238],  # point 4
-        [0.038335, 0.3615, -0.1985]   # point 5
+        [-0.0835, 0.626165, -0.266335],  
+        [-0.005665, 0.661335, -0.124165], 
+        [0.080665, 0.655165, -0.266335], 
+        [-0.017335, 0.792165, -0.238],  
+        [0.038335, 0.3615, -0.1985]  
     ])
 
-    # Create a diamond as the sims hat
     diamond = Pyramid(v_list)
-    diamond.set_material([0.1, 0.7, 0.1], [0.1, 0.7, 0.1], [0.3, 0.3, 0.3], 10, 0.9)  # Green, transparent diamond
+    diamond.set_material([0.1, 0.7, 0.1], [0.1, 0.7, 0.1], [0.3, 0.3, 0.3], 10, 0.9)  
 
-    # Create a sphere for the sims face 
     sphere = Sphere(center=[0, 0, 0], radius=0.25)
-    sphere.set_material([0.8, 0.7, 0.5], [0.8, 0.7, 0.5], [0.3, 0.3, 0.3], 10, 0.3)  # Beige colored sphere
+    sphere.set_material([0.8, 0.7, 0.5], [0.8, 0.7, 0.5], [0.3, 0.3, 0.3], 10, 0.3)  
 
-    #eye
     left_eye = Sphere(center=[-0.1, 0.08, 0.2], radius=0.03)
-    left_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  # Black, opaque eyes
+    left_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  
 
     right_eye = Sphere(center=[0.1, 0.08, 0.2], radius=0.03)
-    right_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  # Black, opaque eyes
+    right_eye.set_material([0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], 10, 0.3)  
 
     plane = Plane([0, 1, 0], [0, -0.3, 0])
-    plane.set_material([1, 1, 0], [1, 1, 0], [1, 1, 1], 1000, 0.8)  # Yellow and reflective
+    plane.set_material([1, 1, 0], [1, 1, 0], [1, 1, 1], 1000, 0.8) 
 
     background = Plane([0, 0, 1], [0, 0, -3])
-    background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 1000, 0)  # Light blue
+    background.set_material([0.5, 0.8, 1], [0.5, 0.8, 1], [0.5, 0.8, 1], 1000, 0) 
 
     house_lower_tri_list = np.array([[-1.7,-0.3,-1],
                    [-0.7,-0.3,-1],
                    [-1.7,0.9,-1]])
 
     house_lower_tri = Triangle(*house_lower_tri_list)
-    house_lower_tri.set_material([0.8, 0.8, 0.8], [0.8, 0.8, 0.8], [0, 0, 0], 100, 0.5)
+    house_lower_tri.set_material([1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [0.1, 0.1, 0.1], 100, 0.5)
 
     house_upper_tri_list = np.array([[-0.7,0.9,-1],
                    [-0.7,-0.3,-1],
                    [-1.7,0.9,-1]])
-    house_upper_tri = Triangle(*house_upper_tri_list)
-    house_upper_tri.set_material([0.8, 0.8, 0.8], [0.8, 0.8, 0.8], [0, 0, 0], 100, 0.5)
+    house_upper_tri = Triangle(*house_upper_tri_list[::-1])
+    house_upper_tri.set_material([1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [0.1, 0.1, 0.1], 100, 0.5)
 
     roof_list = np.array([[-0.7,0.9,-1],
                    [-1.2,1.5,-1],
@@ -162,14 +158,11 @@ def your_own_scene():
     roof = Triangle(*roof_list)
     roof.set_material([1, 0, 0], [1, 0, 0], [.1, .1, .1], 100, 0.5)
 
-    # define lights
-    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([0, 0, 1]), kc=0.1, kl=0.1, kq=0.1)
+    point_light = PointLight(intensity=np.array([1, 1, 1]), position=np.array([2, 2, 2]), kc=0.1, kl=0.1, kq=0.1)
     directional_light = DirectionalLight(intensity=np.array([0.5, 0.5, 0.5]), direction=np.array([-1, -1, -1]))
 
-    # set camera position
     camera = np.array([0, 0, 1])  
 
-    # set scene objects and lights
     objects = [diamond, sphere, plane, background, left_eye, right_eye, house_lower_tri, house_upper_tri, roof]
     lights = [point_light, directional_light]
 
