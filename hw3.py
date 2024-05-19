@@ -90,14 +90,7 @@ def calc_specular(light, hit, object : Object3D, view_ray : Ray):
     
     return specular_intensity
 
-# # Write your own objects and lights
-# # TODO
-# def your_own_scene():
-#     camera = np.array([0,0,1])
-#     lights = []
-#     objects = []
-#     return camera, lights, objects
-
+# Write your own objects and lights
 def your_own_scene():
     """
     This function defines a scene with a sims character like object and sets the lights and camera.
