@@ -1,2 +1,2 @@
 # ray-tracing-algorithm
-An implementation of the Ray Tracing Algorithm.
+A python implementation of the famous Ray Tracing algorithm.
